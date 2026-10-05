@@ -4,228 +4,426 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cooperstown Memories</title>
+<meta name="description" content="2022 12U DHYS Red Devils, Week 6 Cooperstown All Star Village Champions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
-  /* Layout: a single centered column; a vertical timeline rail on the left,
-     one full-width video per stop, grouped by game */
+  /* Layout: navy banner header with the trophy photo, then a single column:
+     game-by-game timeline (videos attached to their games), photo grid, roster */
   :root {
-    --bg: #f4f5f7;
+    --bg: #f3f4f7;
     --surface: #ffffff;
-    --fg: #17202e;
-    --muted: #5b6474;
-    --line: #d6dbe2;
-    --accent: #b8242b;
+    --fg: #16202f;
+    --muted: #5a6474;
+    --line: #d5dae2;
+    --accent: #c0262e;
+    --navy: #1b2a4a;
+    --on-navy: #ffffff;
+    --on-navy-muted: #c3cce0;
+    --win: #1f7a45;
     --display: "Barlow Condensed", "Arial Narrow", sans-serif;
     --body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #10141b;
-      --surface: #1a2029;
+      --bg: #0f131a;
+      --surface: #19202a;
       --fg: #e9ecf1;
       --muted: #9aa3b1;
-      --line: #2d3440;
-      --accent: #ec5a60;
+      --line: #2c3340;
+      --accent: #ee5b61;
+      --navy: #17233d;
+      --on-navy: #ffffff;
+      --on-navy-muted: #b4bfd6;
+      --win: #52c07f;
       color-scheme: dark;
     }
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--fg);
     font: 17px/1.55 var(--body);
   }
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Header band */
+  .band { background: var(--navy); color: var(--on-navy); }
+  .band-inner {
+    max-width: 1080px; margin: 0 auto;
+    padding: 36px 20px 32px;
+    display: grid; gap: 28px;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  @media (max-width: 760px) { .band-inner { grid-template-columns: 1fr; } }
+  .band-text { display: grid; gap: 12px; min-width: 0; }
+  .eyebrow {
+    margin: 0;
+    font: 700 0.85rem/1.2 var(--body);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #ff8a8f;
+  }
+  h1 {
+    margin: 0;
+    font: 700 clamp(2.4rem, 5.6vw, 4.2rem)/0.92 var(--display);
+    overflow-wrap: anywhere;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  .subtitle { margin: 0; color: var(--on-navy-muted); font-size: 1.1rem; max-width: 40ch; }
+  .stats { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 6px 0 0; padding: 0; list-style: none; }
+  .stats li { display: grid; gap: 2px; }
+  .stats strong { font: 700 2rem/1 var(--display); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+  .stats span { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--on-navy-muted); }
+  .hero-photo {
+    margin: 0; border-radius: 6px; overflow: hidden;
+    border: 3px solid rgba(255,255,255,0.9);
+    transform: rotate(1.2deg);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    background: #000;
+    cursor: zoom-in;
+    max-width: 100%;
+  }
+  .hero-photo img { display: block; width: 100%; height: auto; }
+  @media (max-width: 760px) { .hero-photo { transform: none; } }
+
+  nav.jump {
+    max-width: 1080px; margin: 0 auto;
+    padding: 0 20px 18px;
+    display: flex; flex-wrap: wrap; gap: 8px 22px;
+  }
+  nav.jump a {
+    color: var(--on-navy); text-decoration: none;
+    font: 600 0.95rem/1 var(--body);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 6px 0; border-bottom: 2px solid transparent;
+  }
+  nav.jump a:hover { border-bottom-color: #ff8a8f; }
+
   .wrap {
     max-width: 1040px;
     margin: 0 auto;
     padding: 40px 20px 72px;
     display: grid;
-    gap: 36px;
+    gap: 64px;
   }
-
-  header { display: grid; gap: 10px; }
-  .eyebrow {
+  .section { display: grid; gap: 24px; scroll-margin-top: 16px; }
+  .section-head {
+    display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 20px;
+    border-bottom: 3px solid var(--fg); padding-bottom: 10px;
+  }
+  h2 {
     margin: 0;
-    font: 600 0.85rem/1 var(--body);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-  }
-  h1 {
-    margin: 0;
-    font: 700 clamp(2.4rem, 7vw, 4rem)/0.95 var(--display);
-    text-transform: uppercase;
-    letter-spacing: 0.01em;
-    text-wrap: balance;
-  }
-  .subtitle { margin: 0; color: var(--muted); max-width: 60ch; }
-
-  .controls {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
-    padding-top: 6px;
-  }
-  .controls span { color: var(--muted); font-size: 0.95rem; }
-  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
-  .seg button {
-    font: 600 0.95rem/1 var(--body);
-    color: var(--fg);
-    background: var(--surface);
-    border: 0;
-    padding: 9px 16px;
-    cursor: pointer;
-  }
-  .seg button + button { border-left: 1px solid var(--line); }
-  .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
-  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-  /* Timeline */
-  .timeline { display: grid; gap: 44px; }
-  .game { display: grid; gap: 28px; }
-  .game-head {
-    display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--fg);
-  }
-  .game-head h2 {
-    margin: 0;
-    font: 700 1.9rem/1 var(--display);
+    font: 700 2.3rem/1 var(--display);
     text-transform: uppercase;
     letter-spacing: 0.02em;
   }
-  .game-head .date { color: var(--muted); font-weight: 600; }
+  .section-note { margin: 0; color: var(--muted); font-size: 0.95rem; }
 
-  .stops { display: grid; gap: 36px; position: relative; padding-left: 30px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .seg button {
+    font: 600 0.92rem/1 var(--body); color: var(--fg); background: var(--surface);
+    border: 0; padding: 9px 14px; cursor: pointer;
+  }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
+  /* Timeline */
+  .timeline { display: grid; gap: 40px; }
+  .phase { display: grid; gap: 22px; }
+  .phase-head {
+    margin: 0;
+    font: 700 1.25rem/1 var(--display);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+  .stops { display: grid; gap: 22px; position: relative; padding-left: 30px; }
   .stops::before {
-    content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px;
+    content: ""; position: absolute; left: 7px; top: 10px; bottom: 10px;
     width: 2px; background: var(--line);
   }
-  .stop { display: grid; gap: 12px; position: relative; min-width: 0; }
+  .stop { position: relative; display: grid; gap: 14px; min-width: 0; }
   .stop::before {
-    content: ""; position: absolute; left: -30px; top: 6px;
+    content: ""; position: absolute; left: -30px; top: 18px;
     width: 16px; height: 16px; border-radius: 50%;
     background: var(--bg); border: 3px solid var(--accent);
   }
   .stop.final::before { background: var(--accent); }
-  .stop-head {
-    display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px;
-  }
-  .stop h3 { margin: 0; font: 600 1.35rem/1.2 var(--body); }
-  .stop-meta { display: flex; align-items: center; gap: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .fs {
-    font: 600 0.9rem/1 var(--body);
-    color: var(--accent);
-    background: transparent;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 7px 11px;
-    cursor: pointer;
-  }
-  .fs:hover { border-color: var(--accent); }
 
-  .player {
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #000;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-  .clip { background: #000; border-radius: 6px; overflow: hidden; max-width: 100%; }
-  .clip video { display: block; width: 100%; height: auto; max-height: 80vh; background: #000; }
-  .album {
-    display: grid; gap: 4px; justify-items: start;
-    padding: 22px 24px;
+  .game {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 6px;
-    text-decoration: none;
-    color: var(--fg);
+    padding: 16px 18px;
+    display: grid; gap: 8px;
   }
-  .album:hover, .album:focus-visible { border-color: var(--accent); }
-  .album:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .album-cta { font: 700 1.3rem/1.1 var(--display); color: var(--accent); text-transform: uppercase; letter-spacing: 0.03em; }
-  .album-note { color: var(--muted); }
+  .game-top { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+  .game-id { display: grid; gap: 2px; min-width: 0; }
+  .game-label { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .game-opp { font: 600 1.25rem/1.2 var(--body); }
+  .game-opp .ha { color: var(--muted); font-weight: 400; }
+  .score { text-align: right; flex: none; }
+  .score b { display: block; font: 700 2rem/1 var(--display); font-variant-numeric: tabular-nums; color: var(--win); letter-spacing: 0.02em; }
+  .score small { color: var(--muted); font-size: 0.85rem; }
+  .game-facts { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; color: var(--fg); font-size: 0.97rem; }
+  .game-facts dt { display: inline; font-weight: 700; color: var(--muted); }
+  .game-facts dt::after { content: " "; }
+  .game-facts dd { display: inline; margin: 0; }
+  .game-facts div { min-width: 0; }
+  .moments { margin: 4px 0 0; padding-left: 1.1em; display: grid; gap: 2px; }
+  .moments li::marker { color: var(--accent); }
+
+  .clip-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
+  .clip-head h3 { margin: 0; font: 600 1.2rem/1.25 var(--body); }
+  .clip-meta { display: flex; align-items: center; gap: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .fs {
+    font: 600 0.9rem/1 var(--body); color: var(--accent); background: transparent;
+    border: 1px solid var(--line); border-radius: 6px; padding: 7px 11px; cursor: pointer;
+  }
+  .fs:hover { border-color: var(--accent); }
+  .clips { display: grid; gap: 26px; }
+  .clip { display: grid; gap: 10px; min-width: 0; }
+  .player { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; overflow: hidden; }
+  .player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .vid { background: #000; border-radius: 6px; overflow: hidden; max-width: 100%; }
+  .vid video { display: block; width: 100%; height: auto; max-height: 80vh; background: #000; }
   .note { margin: 0; color: var(--muted); }
 
-  footer { color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+  /* Photos */
+  .photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .photos button {
+    padding: 0; border: 0; background: var(--line); border-radius: 6px; overflow: hidden;
+    aspect-ratio: 4 / 3; cursor: zoom-in; max-width: 100%;
+  }
+  .photos img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .photos button:hover img { transform: scale(1.04); }
+  @media (prefers-reduced-motion: reduce) { .photos img { transition: none; } }
+
+  .lightbox {
+    position: fixed; inset: 0; z-index: 10;
+    background: rgba(8, 12, 20, 0.94);
+    display: grid; grid-template-rows: auto 1fr auto;
+    padding: calc(env(safe-area-inset-top, 0px) + 10px) 12px calc(env(safe-area-inset-bottom, 0px) + 14px);
+    color: #fff;
+  }
+  .lightbox[hidden] { display: none; }
+  .lb-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .lb-count { font-variant-numeric: tabular-nums; color: #c3cce0; }
+  .lb-btn {
+    font: 600 1rem/1 var(--body); color: #fff; background: rgba(255,255,255,0.12);
+    border: 0; border-radius: 6px; padding: 10px 14px; cursor: pointer;
+  }
+  .lb-btn:hover { background: rgba(255,255,255,0.22); }
+  .lb-stage { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; min-height: 0; }
+  .lb-stage img { max-width: 100%; max-height: 100%; margin: auto; display: block; object-fit: contain; min-height: 0; }
+  .lb-imgwrap { min-height: 0; height: 100%; display: grid; place-items: center; }
+  .lb-cap { margin: 10px auto 0; max-width: 70ch; text-align: center; color: #dfe4ee; }
+
+  /* Roster */
+  .roster { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .player-card {
+    display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); align-items: center; gap: 12px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px;
+  }
+  .num { font: 700 2.2rem/1 var(--display); color: var(--accent); text-align: center; font-variant-numeric: tabular-nums; }
+  .pname { font-weight: 700; font-size: 1.05rem; line-height: 1.2; }
+  .pstats { color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+  .coaches { margin: 0; color: var(--fg); }
+  .coaches b { color: var(--muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.08em; margin-right: 6px; }
+
+  footer { color: var(--muted); font-size: 0.9rem; }
 
   @media (max-width: 480px) {
     .stops { padding-left: 22px; }
     .stops::before { left: 5px; }
     .stop::before { left: -22px; width: 12px; height: 12px; }
+    .game { padding: 14px; }
+    .score b { font-size: 1.7rem; }
   }
 </style>
 </head>
 <body>
+
+<div class="band">
+  <div class="band-inner">
+    <div class="band-text">
+      <p class="eyebrow">2022 12U DHYS Red Devils · Atlanta, GA</p>
+      <h1>Cooperstown Memories</h1>
+      <p class="subtitle">Week 6 Cooperstown All Star Village Champions, July 2022</p>
+      <ul class="stats" id="stats"></ul>
+    </div>
+    <figure class="hero-photo" id="hero-photo" role="button" tabindex="0" aria-label="Open the championship trophy photo">
+      <img src="photos/champions-trophy.jpg" alt="The Red Devils celebrating with the championship trophy on Patton Field" width="992" height="744">
+    </figure>
+  </div>
+  <nav class="jump" aria-label="Sections">
+    <a href="#games">Games &amp; Videos</a>
+    <a href="#photos">Photos</a>
+    <a href="#roster">Roster</a>
+  </nav>
+</div>
+
 <div class="wrap">
-  <header>
-    <p class="eyebrow" id="eyebrow"></p>
-    <h1 id="site-title"></h1>
-    <p class="subtitle" id="site-subtitle"></p>
-    <div class="controls">
-      <span>Order:</span>
+  <section class="section" id="games">
+    <div class="section-head">
+      <h2>Games &amp; Videos</h2>
       <div class="seg" role="group" aria-label="Timeline order">
         <button type="button" id="order-forward" aria-pressed="true">Start to finish</button>
         <button type="button" id="order-reverse" aria-pressed="false">Championship first</button>
       </div>
     </div>
-  </header>
+    <div class="timeline" id="timeline"></div>
+  </section>
 
-  <main class="timeline" id="timeline"></main>
+  <section class="section" id="photos">
+    <div class="section-head"><h2>Photos</h2></div>
+    <div class="photos" id="photo-grid"></div>
+  </section>
 
-  <footer id="footer"></footer>
+  <section class="section" id="roster">
+    <div class="section-head">
+      <h2>Roster</h2>
+      <p class="section-note">Home runs and pitching wins are tournament totals from the game summaries.</p>
+    </div>
+    <div class="roster" id="roster-grid"></div>
+    <p class="coaches" id="coaches"></p>
+  </section>
+
+  <footer>Game results and roster from the team's championship banner.</footer>
+</div>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <div class="lb-bar">
+    <span class="lb-count" id="lb-count"></span>
+    <button type="button" class="lb-btn" id="lb-close">Close ✕</button>
+  </div>
+  <div class="lb-stage">
+    <button type="button" class="lb-btn" id="lb-prev" aria-label="Previous photo">‹</button>
+    <div class="lb-imgwrap"><img id="lb-img" alt=""></div>
+    <button type="button" class="lb-btn" id="lb-next" aria-label="Next photo">›</button>
+  </div>
+  <p class="lb-cap" id="lb-cap"></p>
 </div>
 
 <script>
   /* ===== EDIT HERE =====================================================
-     Sections are listed in the order they happened; videos inside each
-     section are too. Each video uses one of:
+     ROSTER and COACHES come from the roster banner.
+     TIMELINE sections are in the order they happened. A game can carry
+     videos; each video uses one of:
        url:  a Vimeo or YouTube link (embedded on the page)
        file: a video saved in the media folder (played on the page)
-       link: anything else, such as a Google Photos album (opens in a new tab)
-     "length" is m:ss and optional.
+     PHOTOS live in the photos folder (full size + "-sm" thumbnail).
   ====================================================================== */
-  const SITE = {
-    eyebrow: "Red Devils 12U",
-    title: "Cooperstown Memories",
-    subtitle: "The run to the Cooperstown championship, July 2022."
+  const ROSTER = [
+    { num: 0, name: "Lee Shanlever" },
+    { num: 2, name: "Cullen O'Shea" },
+    { num: 4, name: "Will Schrade" },
+    { num: 7, name: "Robert McHoul" },
+    { num: 8, name: "Desi Borda" },
+    { num: 10, name: "Mac Vaysman" },
+    { num: 13, name: "Jack Raymer" },
+    { num: 18, name: "Anson Nguyen" },
+    { num: 19, name: "Sam Wood" },
+    { num: 22, name: "JMike Hockenberry" },
+    { num: 40, name: "Simeon Collums" },
+    { num: 52, name: "Alec Sevigny" }
+  ];
+  const COACHES = {
+    Manager: ["Mike Shanlever"],
+    Coaches: ["Rob McHoul", "Lev Vaysman", "Joe Collums"]
   };
 
-  const GAMES = [
+  const TIMELINE = [
     {
-      name: "Tournament Week",
-      date: "",
-      videos: [
-        { title: "Cooperstown Week 6 Highlight Reel", url: "https://www.youtube.com/watch?v=JBbG4IIunHA", note: "From Cooperstown All Star Village" },
-        { title: "12U RD Bombs", url: "https://www.youtube.com/watch?v=r5RpjceB_mI" }
+      phase: "Tournament Week",
+      items: [
+        { kind: "videos", videos: [
+          { title: "Cooperstown Week 6 Highlight Reel", url: "https://www.youtube.com/watch?v=JBbG4IIunHA", note: "From Cooperstown All Star Village" },
+          { title: "12U RD Bombs", url: "https://www.youtube.com/watch?v=r5RpjceB_mI" }
+        ] }
       ]
     },
     {
-      name: "Semifinal",
-      date: "",
-      videos: [
-        { title: "Semifinal, 8 HR", url: "https://vimeo.com/728680973/b036b01d5e", length: "7:56" }
+      phase: "Pool Play",
+      items: [
+        { kind: "game", label: "Pool Game 1", ha: "@", opp: "American Dream, NC", score: [9, 5], wp: "Borda", hr: ["Vaysman"] },
+        { kind: "game", label: "Pool Game 2", ha: "vs", opp: "Power Alley, CO", score: [10, 2], wp: "Nguyen", hr: ["Nguyen", "Raymer"] },
+        { kind: "game", label: "Pool Game 3", ha: "vs", opp: "Techachapi Seminoles, CA", score: [28, 3], wp: "Shanlever", hr: ["Vaysman", "McHoul", "Raymer", "Sevigny", "Schrade", "Schrade"] },
+        { kind: "game", label: "Pool Game 4", ha: "@", opp: "Impact Baseball Christianson, CA", score: [26, 7], wp: "McHoul", hr: ["Vaysman", "Nguyen", "Nguyen", "Raymer", "Hockenberry", "O'Shea", "Wood"] },
+        { kind: "game", label: "Pool Game 5", ha: "@", opp: "Salt Lake Saints, UT", score: [11, 1], wp: "Sevigny", hr: ["Vaysman", "Nguyen", "Nguyen", "Raymer", "Hockenberry", "Wood"] },
+        { kind: "game", label: "Pool Game 6", ha: "vs", opp: "Chobee Dirtbags, FL", score: [10, 8], wp: "Hockenberry", sv: "Nguyen", hr: ["Vaysman", "McHoul"] }
       ]
     },
     {
-      name: "Championship Game",
-      date: "July 9, 2022",
-      videos: [
-        { title: "Announcing the Red Devils!", url: "https://vimeo.com/728918350", length: "2:44" },
-        { title: "2nd Inning, Up 4–0", file: "media/second-inning.mp4", poster: "media/second-inning.jpg", length: "0:22", note: "GameChanger stream vs. TBSA Patriots" },
-        { title: "Bottom of the 6th, Up 7–4", file: "media/bottom-sixth.mp4", poster: "media/bottom-sixth.jpg", length: "0:34", note: "GameChanger stream vs. TBSA Patriots" },
-        { title: "Rushing the Field", url: "https://vimeo.com/728887107", length: "1:28" },
-        { title: "Championship!", url: "https://vimeo.com/728599497/89dd0a225b", length: "1:23", final: true },
-        { title: "Shared Photo and Video Album", link: "https://photos.app.goo.gl/tYTkgiBzrsA4imtU6", note: "Google Photos album from July 9, 2022" }
+      phase: "Bracket Play",
+      items: [
+        { kind: "game", label: "Bracket Game 1", ha: "vs", opp: "RD2 12u Martinez, CA", score: [11, 3], wp: "Borda", hr: ["McHoul", "Nguyen"] },
+        { kind: "game", label: "Quarterfinals", ha: "vs", opp: "Legacy Sports, NV", score: [11, 3], wp: "McHoul", hr: ["McHoul", "Shanlever"] },
+        { kind: "game", label: "Semifinals", ha: "vs", opp: "Tampa Phenoms, FL", score: [16, 13], extra: "8 innings", wp: "Sevigny",
+          hr: ["Borda", "Nguyen", "Raymer", "Hockenberry", "Hockenberry", "Schrade", "Vaysman", "Schrade"],
+          moments: [
+            "Game-tying HR: Schrade (3-2 count, 2 outs, bottom 6th)",
+            "Game-tying HR: Vaysman (3-2 count, 2 outs, bottom 7th)",
+            "Game-winning walk-off HR: Schrade (bottom 8th)"
+          ],
+          videos: [
+            { title: "Semifinal, 8 HR", url: "https://vimeo.com/728680973/b036b01d5e", length: "7:56" }
+          ] },
+        { kind: "game", label: "Championship", ha: "@", opp: "TBSA Patriots 12u Moritz, FL", score: [7, 4], date: "July 9, 2022", final: true,
+          wp: "Raymer", hold: "Sevigny", sv: "Nguyen", moments: ["HR-saving catch: Wood"],
+          videos: [
+            { title: "Announcing the Red Devils!", url: "https://vimeo.com/728918350", length: "2:44" },
+            { title: "Bottom of the 2nd, Up 4–0", file: "media/second-inning.mp4", poster: "media/second-inning.jpg", length: "0:22", note: "GameChanger stream" },
+            { title: "Bottom of the 6th, Final Inning", file: "media/bottom-sixth.mp4", poster: "media/bottom-sixth.jpg", length: "0:34", note: "GameChanger stream, Red Devils up 7–4" },
+            { title: "Rushing the Field", url: "https://vimeo.com/728887107", length: "1:28" },
+            { title: "Championship!", url: "https://vimeo.com/728599497/89dd0a225b", length: "1:23" }
+          ] }
       ]
     }
   ];
+
+  const PHOTOS = [
+    { file: "arrival", alt: "Families walking their bags to the cabins", caption: "Arriving at Cooperstown All Star Village" },
+    { file: "all-star-village-sign", alt: "A player beside the Cooperstown All Star Village sign", caption: "At the All Star Village sign" },
+    { file: "team-photo", alt: "Official team photo in front of the Cooperstown sign", caption: "Top (L to R): Coach Rob McHoul, Coach Lev Vaysman, Simeon Collums, Anson Nguyen, Jack Raymer, Robert McHoul, JMike Hockenberry, Cullen O'Shea, Manager Mike Shanlever, Coach Joe Collums. Bottom (L to R): Alec Sevigny, Mac Vaysman, Lee Shanlever, Desi Borda, Sam Wood, Will Schrade." },
+    { file: "team-in-whites", alt: "The team lined up on the field in white Devils uniforms", caption: "The Red Devils in their whites" },
+    { file: "fan-section", alt: "Red Devils moms in red shirts and devil horns", caption: "The Red Devils fan section" },
+    { file: "dhys-fans", alt: "Fans with DHYS body paint", caption: "DHYS fans going all out" },
+    { file: "dugout", alt: "Players and families celebrating in the dugout", caption: "Celebrating in the dugout" },
+    { file: "under-the-lights", alt: "Players sitting on the outfield wall at night", caption: "Under the lights" },
+    { file: "champions-trophy", alt: "The team celebrating with the championship trophy on Patton Field", caption: "Champions on Patton Field" },
+    { file: "signed-welcome", alt: "A welcome sign signed by players and coaches, dated 7.9.2022", caption: "Signed by the team: \"Welcome to the A, 7.9.2022\"" }
+  ];
   /* ===================================================================== */
 
+  function el(tag, cls, text) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  /* ---------- header stats ---------- */
+  const games = TIMELINE.flatMap(p => p.items).filter(i => i.kind === "game");
+  const wins = games.filter(g => g.score[0] > g.score[1]).length;
+  const rf = games.reduce((t, g) => t + g.score[0], 0);
+  const ra = games.reduce((t, g) => t + g.score[1], 0);
+  const hrTotal = games.reduce((t, g) => t + (g.hr ? g.hr.length : 0), 0);
+  [[wins + "–" + (games.length - wins), "Record"], [rf + "–" + ra, "Runs"], [hrTotal, "Home runs"]].forEach(([v, l]) => {
+    const li = el("li");
+    li.appendChild(el("strong", null, String(v)));
+    li.appendChild(el("span", null, l));
+    document.getElementById("stats").appendChild(li);
+  });
+
+  /* ---------- video players ---------- */
   function embedUrl(url) {
     try {
       const u = new URL(url);
@@ -250,102 +448,120 @@
     return null;
   }
 
-  function el(tag, cls, text) {
-    const n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text) n.textContent = text;
-    return n;
-  }
-
   const canFullscreen = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
-
-  function goFullscreen(target) {
-    const req = target.requestFullscreen || target.webkitRequestFullscreen;
-    if (req) {
-      try {
-        const p = req.call(target);
-        if (p && p.catch) p.catch(() => {});
-      } catch (e) {}
-    }
+  function goFullscreen(t) {
+    const req = t.requestFullscreen || t.webkitRequestFullscreen;
+    if (!req) return false;
+    try { const p = req.call(t); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+    return true;
   }
 
-  function stop(v, isFinal) {
-    const s = el("article", "stop" + (isFinal ? " final" : ""));
-    const head = el("div", "stop-head");
+  function clip(v) {
+    const c = el("div", "clip");
+    const head = el("div", "clip-head");
     head.appendChild(el("h3", null, v.title));
-    const meta = el("div", "stop-meta");
+    const meta = el("div", "clip-meta");
     if (v.length) meta.appendChild(el("span", null, v.length));
-
-    const src = v.url ? embedUrl(v.url) : null;
-    let box;
+    let box, target = null;
     if (v.file) {
-      box = el("div", "clip");
+      box = el("div", "vid");
       const vid = document.createElement("video");
       vid.src = v.file;
       if (v.poster) vid.poster = v.poster;
-      vid.controls = true;
-      vid.playsInline = true;
-      vid.preload = "metadata";
+      vid.controls = true; vid.playsInline = true; vid.preload = "metadata";
       vid.setAttribute("aria-label", v.title);
       box.appendChild(vid);
+      target = vid;
+    } else {
+      const src = embedUrl(v.url);
+      if (src) {
+        box = el("div", "player");
+        const f = document.createElement("iframe");
+        f.src = src; f.title = v.title; f.loading = "lazy";
+        f.allow = "autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share";
+        f.referrerPolicy = "strict-origin-when-cross-origin";
+        f.allowFullscreen = true;
+        box.appendChild(f);
+        if (canFullscreen) target = f;
+      } else {
+        box = el("a", "fs", "Watch video ↗");
+        box.href = v.url; box.target = "_blank"; box.rel = "noopener";
+      }
+    }
+    if (target) {
       const b = el("button", "fs", "⛶ Full screen");
       b.type = "button";
       b.setAttribute("aria-label", "Play " + v.title + " full screen");
       b.addEventListener("click", () => {
-        if (vid.requestFullscreen || vid.webkitRequestFullscreen) goFullscreen(vid);
-        else if (vid.webkitEnterFullscreen) vid.webkitEnterFullscreen();
+        if (!goFullscreen(target) && target.webkitEnterFullscreen) target.webkitEnterFullscreen();
       });
       meta.appendChild(b);
-    } else if (v.link) {
-      box = el("a", "album");
-      box.href = v.link; box.target = "_blank"; box.rel = "noopener";
-      box.appendChild(el("span", "album-cta", "Open album ↗"));
-      if (v.note) box.appendChild(el("span", "album-note", v.note));
-    } else if (src) {
-      box = el("div", "player");
-      const f = document.createElement("iframe");
-      f.src = src;
-      f.title = v.title;
-      f.loading = "lazy";
-      f.allow = "autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share";
-      f.referrerPolicy = "strict-origin-when-cross-origin";
-      f.allowFullscreen = true;
-      box.appendChild(f);
-      if (canFullscreen) {
-        const b = el("button", "fs", "⛶ Full screen");
-        b.type = "button";
-        b.setAttribute("aria-label", "Play " + v.title + " full screen");
-        b.addEventListener("click", () => goFullscreen(f));
-        meta.appendChild(b);
-      }
-    } else {
-      box = el("a", "fs", "Watch video ↗");
-      box.href = v.url; box.target = "_blank"; box.rel = "noopener";
     }
     head.appendChild(meta);
-    s.appendChild(head);
-    s.appendChild(box);
-    if (v.note && !v.link) s.appendChild(el("p", "note", v.note));
-    return s;
+    c.appendChild(head);
+    c.appendChild(box);
+    if (v.note) c.appendChild(el("p", "note", v.note));
+    return c;
   }
 
-  const timeline = document.getElementById("timeline");
-  const lastGame = GAMES.length - 1;
+  /* ---------- game card ---------- */
+  function tally(list) {
+    const counts = new Map();
+    list.forEach(n => counts.set(n, (counts.get(n) || 0) + 1));
+    return [...counts].map(([n, k]) => n + (k > 1 ? " (" + k + ")" : "")).join(", ");
+  }
 
+  function gameCard(g) {
+    const card = el("div", "game");
+    const top = el("div", "game-top");
+    const id = el("div", "game-id");
+    id.appendChild(el("span", "game-label", g.label + (g.date ? " · " + g.date : "")));
+    const opp = el("span", "game-opp");
+    opp.appendChild(el("span", "ha", g.ha + " "));
+    opp.appendChild(document.createTextNode(g.opp));
+    id.appendChild(opp);
+    top.appendChild(id);
+    const sc = el("div", "score");
+    const won = g.score[0] > g.score[1];
+    sc.appendChild(el("b", null, (won ? "W " : "L ") + g.score[0] + "–" + g.score[1]));
+    if (g.extra) sc.appendChild(el("small", null, g.extra));
+    top.appendChild(sc);
+    card.appendChild(top);
+
+    const facts = el("dl", "game-facts");
+    const add = (k, v) => { if (!v) return; const d = el("div"); d.appendChild(el("dt", null, k)); d.appendChild(el("dd", null, v)); facts.appendChild(d); };
+    add("WP", g.wp); add("Hold", g.hold); add("SV", g.sv);
+    if (g.hr && g.hr.length) add("HR", tally(g.hr));
+    card.appendChild(facts);
+
+    if (g.moments) {
+      const ul = el("ul", "moments");
+      g.moments.forEach(m => ul.appendChild(el("li", null, m)));
+      card.appendChild(ul);
+    }
+    return card;
+  }
+
+  /* ---------- timeline ---------- */
+  const timeline = document.getElementById("timeline");
   function render(reverse) {
     timeline.textContent = "";
-    const games = GAMES.map((g, gi) => ({ g, gi }));
-    if (reverse) games.reverse();
-    games.forEach(({ g, gi }) => {
-      const sec = el("section", "game");
-      const head = el("div", "game-head");
-      head.appendChild(el("h2", null, g.name));
-      if (g.date) head.appendChild(el("span", "date", g.date));
-      sec.appendChild(head);
+    const phases = reverse ? [...TIMELINE].reverse() : TIMELINE;
+    phases.forEach(p => {
+      const sec = el("div", "phase");
+      sec.appendChild(el("h3", "phase-head", p.phase));
       const list = el("div", "stops");
-      const vids = g.videos.map(v => ({ v, isFinal: !!v.final }));
-      if (reverse) vids.reverse();
-      vids.forEach(({ v, isFinal }) => list.appendChild(stop(v, isFinal)));
+      const items = reverse ? [...p.items].reverse() : p.items;
+      items.forEach(item => {
+        const s = el("article", "stop" + (item.final ? " final" : ""));
+        if (item.kind === "game") s.appendChild(gameCard(item));
+        if (item.videos) {
+          const vids = el("div", "clips");
+          item.videos.forEach(v => vids.appendChild(clip(v)));
+          s.appendChild(vids);
+        }
+        list.appendChild(s);
+      });
       sec.appendChild(list);
       timeline.appendChild(sec);
     });
@@ -353,21 +569,98 @@
     document.getElementById("order-reverse").setAttribute("aria-pressed", String(reverse));
     try { localStorage.setItem("cm-order", reverse ? "reverse" : "forward"); } catch (e) {}
   }
-
-  document.getElementById("eyebrow").textContent = SITE.eyebrow;
-  document.getElementById("site-title").textContent = SITE.title;
-  document.getElementById("site-subtitle").textContent = SITE.subtitle;
-  document.title = SITE.title;
-
   document.getElementById("order-forward").addEventListener("click", () => render(false));
   document.getElementById("order-reverse").addEventListener("click", () => render(true));
-
   let saved = "forward";
   try { saved = localStorage.getItem("cm-order") || "forward"; } catch (e) {}
   render(saved === "reverse");
 
-  const count = GAMES.flatMap(g => g.videos).filter(v => !v.link).length;
-  document.getElementById("footer").textContent = count + " videos";
+  /* ---------- photos + lightbox ---------- */
+  const grid = document.getElementById("photo-grid");
+  PHOTOS.forEach((p, i) => {
+    const b = el("button");
+    b.type = "button";
+    b.setAttribute("aria-label", "Open photo: " + p.alt);
+    const img = document.createElement("img");
+    img.src = "photos/" + p.file + "-sm.jpg"; img.alt = p.alt; img.loading = "lazy";
+    b.appendChild(img);
+    b.addEventListener("click", () => openLb(i, b));
+    grid.appendChild(b);
+  });
+
+  const lb = document.getElementById("lightbox");
+  const lbImg = document.getElementById("lb-img");
+  let lbIndex = 0, lbReturn = null;
+  function showLb(i) {
+    lbIndex = (i + PHOTOS.length) % PHOTOS.length;
+    const p = PHOTOS[lbIndex];
+    lbImg.src = "photos/" + p.file + ".jpg";
+    lbImg.alt = p.alt;
+    document.getElementById("lb-cap").textContent = p.caption || "";
+    document.getElementById("lb-count").textContent = (lbIndex + 1) + " of " + PHOTOS.length;
+  }
+  function openLb(i, from) {
+    lbReturn = from || null;
+    showLb(i);
+    lb.hidden = false;
+    document.body.style.overflow = "hidden";
+    document.getElementById("lb-close").focus();
+  }
+  function closeLb() {
+    lb.hidden = true;
+    document.body.style.overflow = "";
+    if (lbReturn) lbReturn.focus();
+  }
+  document.getElementById("lb-close").addEventListener("click", closeLb);
+  document.getElementById("lb-prev").addEventListener("click", () => showLb(lbIndex - 1));
+  document.getElementById("lb-next").addEventListener("click", () => showLb(lbIndex + 1));
+  lb.addEventListener("click", e => { if (e.target === lb || e.target.classList.contains("lb-imgwrap")) closeLb(); });
+  document.addEventListener("keydown", e => {
+    if (lb.hidden) return;
+    if (e.key === "Escape") closeLb();
+    if (e.key === "ArrowLeft") showLb(lbIndex - 1);
+    if (e.key === "ArrowRight") showLb(lbIndex + 1);
+  });
+  let touchX = null;
+  lb.addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener("touchend", e => {
+    if (touchX == null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) showLb(lbIndex + (dx < 0 ? 1 : -1));
+    touchX = null;
+  });
+  const hero = document.getElementById("hero-photo");
+  const heroIndex = PHOTOS.findIndex(p => p.file === "champions-trophy");
+  hero.addEventListener("click", () => openLb(heroIndex, hero));
+  hero.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLb(heroIndex, hero); } });
+
+  /* ---------- roster ---------- */
+  const hrBy = new Map(), wBy = new Map();
+  games.forEach(g => {
+    (g.hr || []).forEach(n => hrBy.set(n, (hrBy.get(n) || 0) + 1));
+    if (g.wp) wBy.set(g.wp, (wBy.get(g.wp) || 0) + 1);
+  });
+  const rg = document.getElementById("roster-grid");
+  ROSTER.forEach(p => {
+    const last = p.name.split(" ").slice(-1)[0];
+    const card = el("div", "player-card");
+    card.appendChild(el("div", "num", String(p.num)));
+    const info = el("div");
+    info.appendChild(el("div", "pname", p.name));
+    const bits = [];
+    const hr = hrBy.get(last) || 0, w = wBy.get(last) || 0;
+    if (hr) bits.push(hr + " HR");
+    if (w) bits.push(w + (w === 1 ? " pitching win" : " pitching wins"));
+    if (bits.length) info.appendChild(el("div", "pstats", bits.join(" · ")));
+    card.appendChild(info);
+    rg.appendChild(card);
+  });
+  const co = document.getElementById("coaches");
+  Object.entries(COACHES).forEach(([role, names], i) => {
+    if (i) co.appendChild(document.createTextNode("   "));
+    co.appendChild(el("b", null, role));
+    co.appendChild(document.createTextNode(names.join(", ")));
+  });
 </script>
 </body>
 </html>
