@@ -134,6 +134,21 @@
     overflow: hidden;
   }
   .player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .clip { background: #000; border-radius: 6px; overflow: hidden; max-width: 100%; }
+  .clip video { display: block; width: 100%; height: auto; max-height: 80vh; background: #000; }
+  .album {
+    display: grid; gap: 4px; justify-items: start;
+    padding: 22px 24px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--fg);
+  }
+  .album:hover, .album:focus-visible { border-color: var(--accent); }
+  .album:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .album-cta { font: 700 1.3rem/1.1 var(--display); color: var(--accent); text-transform: uppercase; letter-spacing: 0.03em; }
+  .album-note { color: var(--muted); }
   .note { margin: 0; color: var(--muted); }
 
   footer { color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
@@ -167,16 +182,28 @@
 
 <script>
   /* ===== EDIT HERE =====================================================
-     Games are listed in the order they happened; videos inside each game
-     are too. Paste a Vimeo or YouTube link as the url. "length" is m:ss.
+     Sections are listed in the order they happened; videos inside each
+     section are too. Each video uses one of:
+       url:  a Vimeo or YouTube link (embedded on the page)
+       file: a video saved in the media folder (played on the page)
+       link: anything else, such as a Google Photos album (opens in a new tab)
+     "length" is m:ss and optional.
   ====================================================================== */
   const SITE = {
-    eyebrow: "Red Devils",
+    eyebrow: "Red Devils 12U",
     title: "Cooperstown Memories",
     subtitle: "The run to the Cooperstown championship, July 2022."
   };
 
   const GAMES = [
+    {
+      name: "Tournament Week",
+      date: "",
+      videos: [
+        { title: "Cooperstown Week 6 Highlight Reel", url: "https://www.youtube.com/watch?v=JBbG4IIunHA", note: "From Cooperstown All Star Village" },
+        { title: "12U RD Bombs", url: "https://www.youtube.com/watch?v=r5RpjceB_mI" }
+      ]
+    },
     {
       name: "Semifinal",
       date: "",
@@ -189,8 +216,11 @@
       date: "July 9, 2022",
       videos: [
         { title: "Announcing the Red Devils!", url: "https://vimeo.com/728918350", length: "2:44" },
-        { title: "Championship!", url: "https://vimeo.com/728599497/89dd0a225b", length: "1:23" },
-        { title: "Rushing the Field", url: "https://vimeo.com/728887107", length: "1:28" }
+        { title: "2nd Inning, Up 4–0", file: "media/second-inning.mp4", poster: "media/second-inning.jpg", length: "0:22", note: "GameChanger stream vs. TBSA Patriots" },
+        { title: "Bottom of the 6th, Up 7–4", file: "media/bottom-sixth.mp4", poster: "media/bottom-sixth.jpg", length: "0:34", note: "GameChanger stream vs. TBSA Patriots" },
+        { title: "Rushing the Field", url: "https://vimeo.com/728887107", length: "1:28" },
+        { title: "Championship!", url: "https://vimeo.com/728599497/89dd0a225b", length: "1:23", final: true },
+        { title: "Shared Photo and Video Album", link: "https://photos.app.goo.gl/tYTkgiBzrsA4imtU6", note: "Google Photos album from July 9, 2022" }
       ]
     }
   ];
@@ -246,9 +276,32 @@
     const meta = el("div", "stop-meta");
     if (v.length) meta.appendChild(el("span", null, v.length));
 
-    const src = embedUrl(v.url);
+    const src = v.url ? embedUrl(v.url) : null;
     let box;
-    if (src) {
+    if (v.file) {
+      box = el("div", "clip");
+      const vid = document.createElement("video");
+      vid.src = v.file;
+      if (v.poster) vid.poster = v.poster;
+      vid.controls = true;
+      vid.playsInline = true;
+      vid.preload = "metadata";
+      vid.setAttribute("aria-label", v.title);
+      box.appendChild(vid);
+      const b = el("button", "fs", "⛶ Full screen");
+      b.type = "button";
+      b.setAttribute("aria-label", "Play " + v.title + " full screen");
+      b.addEventListener("click", () => {
+        if (vid.requestFullscreen || vid.webkitRequestFullscreen) goFullscreen(vid);
+        else if (vid.webkitEnterFullscreen) vid.webkitEnterFullscreen();
+      });
+      meta.appendChild(b);
+    } else if (v.link) {
+      box = el("a", "album");
+      box.href = v.link; box.target = "_blank"; box.rel = "noopener";
+      box.appendChild(el("span", "album-cta", "Open album ↗"));
+      if (v.note) box.appendChild(el("span", "album-note", v.note));
+    } else if (src) {
       box = el("div", "player");
       const f = document.createElement("iframe");
       f.src = src;
@@ -272,7 +325,7 @@
     head.appendChild(meta);
     s.appendChild(head);
     s.appendChild(box);
-    if (v.note) s.appendChild(el("p", "note", v.note));
+    if (v.note && !v.link) s.appendChild(el("p", "note", v.note));
     return s;
   }
 
@@ -290,7 +343,7 @@
       if (g.date) head.appendChild(el("span", "date", g.date));
       sec.appendChild(head);
       const list = el("div", "stops");
-      const vids = g.videos.map((v, vi) => ({ v, isFinal: gi === lastGame && vi === g.videos.length - 1 }));
+      const vids = g.videos.map(v => ({ v, isFinal: !!v.final }));
       if (reverse) vids.reverse();
       vids.forEach(({ v, isFinal }) => list.appendChild(stop(v, isFinal)));
       sec.appendChild(list);
@@ -313,13 +366,8 @@
   try { saved = localStorage.getItem("cm-order") || "forward"; } catch (e) {}
   render(saved === "reverse");
 
-  const all = GAMES.flatMap(g => g.videos);
-  const secs = all.reduce((t, v) => {
-    const m = /^(\d+):(\d{2})$/.exec(v.length || "");
-    return t + (m ? (+m[1]) * 60 + (+m[2]) : 0);
-  }, 0);
-  document.getElementById("footer").textContent =
-    all.length + " videos · " + Math.floor(secs / 60) + ":" + String(secs % 60).padStart(2, "0") + " total";
+  const count = GAMES.flatMap(g => g.videos).filter(v => !v.link).length;
+  document.getElementById("footer").textContent = count + " videos";
 </script>
 </body>
 </html>
