@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cooperstown Memories</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+  /* Layout: one featured player on top, then a wrapping grid of the rest */
+  :root {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --fg: #1b1f27;
+    --muted: #5d6573;
+    --line: #dde1e7;
+    --accent: #1f5fbf;
+    --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b;
+      --surface: #1b1f27;
+      --fg: #e8ebf0;
+      --muted: #9aa3b2;
+      --line: #2c323d;
+      --accent: #6fa3f0;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.55 var(--body);
+  }
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px 64px;
+    display: grid;
+    gap: 40px;
+  }
+  header { display: grid; gap: 6px; }
+  h1 {
+    margin: 0;
+    font: 700 clamp(2.2rem, 6vw, 3.4rem)/1 var(--display);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  .subtitle { margin: 0; color: var(--muted); max-width: 60ch; }
+
+  .player {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .player iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; border: 0;
+  }
+  .featured { display: grid; gap: 12px; }
+  .featured h2 {
+    margin: 0;
+    font: 600 1.6rem/1.15 var(--display);
+    letter-spacing: 0.02em;
+  }
+  .meta { margin: 0; color: var(--muted); }
+
+  .section-label {
+    margin: 0;
+    font: 600 0.85rem/1 var(--body);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+  }
+  .card { display: grid; gap: 8px; align-content: start; min-width: 0; }
+  .card h3 { margin: 0; font: 600 1.15rem/1.25 var(--body); }
+  .link-card {
+    display: grid; place-items: center;
+    aspect-ratio: 16 / 9;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .link-card:hover, .link-card:focus-visible { border-color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .empty { color: var(--muted); margin: 0; }
+  footer { color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="site-title"></h1>
+    <p class="subtitle" id="site-subtitle"></p>
+  </header>
+
+  <section class="featured" id="featured"></section>
+
+  <section style="display:grid;gap:20px">
+    <p class="section-label">More videos</p>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <footer id="footer"></footer>
+</div>
+
+<script>
+  /* ===== EDIT HERE =====================================================
+     Page title and subtitle, then one entry per video.
+     url: paste the normal page link (vimeo.com/..., youtube.com/watch?v=...,
+          youtu.be/...) or a player link. Vimeo and YouTube are embedded;
+          anything else shows as a link that opens in a new tab.
+     The first video in the list is shown large at the top.
+  ====================================================================== */
+  const SITE = {
+    title: "Cooperstown Memories",
+    subtitle: "Game highlights from Cooperstown."
+  };
+
+  const VIDEOS = [
+    {
+      title: "Championship!",
+      url: "https://player.vimeo.com/video/728599497?h=89dd0a225b",
+      note: ""
+    },
+    {
+      title: "Semifinal, 8 HR",
+      url: "https://player.vimeo.com/video/728680973?h=b036b01d5e",
+      note: ""
+    }
+    // , { title: "Next video", url: "https://youtu.be/XXXXXXXXXXX", note: "Optional description" }
+  ];
+  /* ===================================================================== */
+
+  function embedUrl(url) {
+    try {
+      const u = new URL(url);
+      const host = u.hostname.replace(/^www\./, "");
+      if (host === "player.vimeo.com") {
+        u.searchParams.set("badge", "0");
+        u.searchParams.set("autopause", "0");
+        return u.toString();
+      }
+      if (host === "vimeo.com") {
+        const parts = u.pathname.split("/").filter(Boolean);
+        const id = parts.find(p => /^\d+$/.test(p));
+        const hash = parts[parts.indexOf(id) + 1];
+        if (!id) return null;
+        let src = "https://player.vimeo.com/video/" + id + "?badge=0&autopause=0";
+        if (hash && /^[0-9a-f]+$/i.test(hash)) src += "&h=" + hash;
+        return src;
+      }
+      if (host === "youtu.be") return "https://www.youtube-nocookie.com/embed/" + u.pathname.slice(1);
+      if (host.endsWith("youtube.com")) {
+        if (u.searchParams.get("v")) return "https://www.youtube-nocookie.com/embed/" + u.searchParams.get("v");
+        const m = u.pathname.match(/\/(embed|shorts|live)\/([^/?]+)/);
+        if (m) return "https://www.youtube-nocookie.com/embed/" + m[2];
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function el(tag, cls, text) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text) n.textContent = text;
+    return n;
+  }
+
+  function media(v) {
+    const src = embedUrl(v.url);
+    if (src) {
+      const box = el("div", "player");
+      const f = document.createElement("iframe");
+      f.src = src;
+      f.title = v.title;
+      f.loading = "lazy";
+      f.allow = "autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share";
+      f.referrerPolicy = "strict-origin-when-cross-origin";
+      f.allowFullscreen = true;
+      box.appendChild(f);
+      return box;
+    }
+    const a = el("a", "link-card", "Watch video ↗");
+    a.href = v.url; a.target = "_blank"; a.rel = "noopener";
+    return a;
+  }
+
+  document.title = SITE.title;
+  document.getElementById("site-title").textContent = SITE.title;
+  document.getElementById("site-subtitle").textContent = SITE.subtitle;
+
+  const [first, ...rest] = VIDEOS;
+  const featured = document.getElementById("featured");
+  if (first) {
+    featured.appendChild(media(first));
+    featured.appendChild(el("h2", null, first.title));
+    if (first.note) featured.appendChild(el("p", "meta", first.note));
+  }
+
+  const grid = document.getElementById("grid");
+  if (rest.length === 0) {
+    grid.appendChild(el("p", "empty", "More videos will appear here."));
+  } else {
+    rest.forEach(v => {
+      const c = el("article", "card");
+      c.appendChild(media(v));
+      c.appendChild(el("h3", null, v.title));
+      if (v.note) c.appendChild(el("p", "meta", v.note));
+      grid.appendChild(c);
+    });
+  }
+
+  document.getElementById("footer").textContent =
+    VIDEOS.length + (VIDEOS.length === 1 ? " video" : " videos");
+</script>
+</body>
+</html>
